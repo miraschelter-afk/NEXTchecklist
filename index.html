@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>nextevents – Sponsor Checkliste</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --surface2: #1a1a1a;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.15);
+    --text: #f0ede8;
+    --muted: #777;
+    --muted2: #555;
+    --gold: #c8a96e;
+    --gold-dim: rgba(200,169,110,0.12);
+    --silver: #a0a8b8;
+    --silver-dim: rgba(160,168,184,0.12);
+    --purple: #9b8aff;
+    --purple-dim: rgba(155,138,255,0.12);
+    --teal: #4ecba0;
+    --teal-dim: rgba(78,203,160,0.12);
+    --blue: #6aabff;
+    --blue-dim: rgba(106,171,255,0.12);
+    --green: #5dde8a;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  html { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.6; }
+
+  body { min-height: 100vh; padding: 0; }
+
+  header {
+    padding: 2rem 2rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(12px);
+    z-index: 10;
+  }
+
+  .logo {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .logo span { color: var(--text); }
+
+  .header-title {
+    font-size: 13px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .main { max-width: 820px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+  h1 { font-size: 28px; font-weight: 600; margin-bottom: 0.4rem; letter-spacing: -0.01em; }
+  .subtitle { font-size: 14px; color: var(--muted); margin-bottom: 2.5rem; }
+
+  .tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+
+  .tab {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 400;
+    cursor: pointer;
+    background: var(--surface);
+    color: var(--muted);
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .tab:hover:not(.active) { border-color: var(--border2); color: var(--text); }
+  .tab.active { color: var(--text); border-color: var(--border2); background: var(--surface2); }
+
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .pkg-meta {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .pkg-name { font-size: 20px; font-weight: 600; margin-bottom: 3px; }
+  .pkg-sub { font-size: 13px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+  .reset-btn {
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .reset-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.3); }
+
+  .progress-row { display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem; }
+  .progress-track { flex: 1; height: 3px; background: var(--border); border-radius: 2px; }
+  .progress-fill { height: 3px; border-radius: 2px; transition: width 0.35s cubic-bezier(.4,0,.2,1); }
+  .progress-label { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; white-space: nowrap; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 1.75rem 0 0.75rem;
+  }
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted2);
+  }
+  .section-line { flex: 1; height: 1px; background: var(--border); }
+
+  .todo {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 14px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    margin-bottom: 5px;
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s;
+    user-select: none;
+  }
+  .todo:hover { background: var(--surface2); border-color: var(--border2); }
+  .todo.done { opacity: 0.38; }
+  .todo.done .todo-text { text-decoration: line-through; color: var(--muted); }
+
+  .cb {
+    width: 17px;
+    height: 17px;
+    border-radius: 5px;
+    border: 1px solid var(--muted2);
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .todo.done .cb { border-color: transparent; }
+
+  .cb-check {
+    display: none;
+    width: 9px;
+    height: 7px;
+  }
+  .cb-check path { stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+  .todo.done .cb-check { display: block; }
+
+  .todo-body { flex: 1; min-width: 0; }
+  .todo-text { font-size: 14px; line-height: 1.5; }
+  .todo-tag {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted2);
+    letter-spacing: 0.02em;
+  }
+  .todo-tag.urgent { color: #e87e5a; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><span>next</span>events</div>
+  <div class="header-title">sponsor-checkliste</div>
+</header>
+
+<div class="main">
+  <h1>Sponsor Ablauf</h1>
+  <p class="subtitle">Pre & Post Event To-Dos für jedes Sponsor-Paket</p>
+
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-pkg="0">
+      <span class="dot" style="background:var(--gold)"></span> Gold
+    </button>
+    <button class="tab" data-pkg="1">
+      <span class="dot" style="background:var(--silver)"></span> Silber
+    </button>
+    <button class="tab" data-pkg="2">
+      <span class="dot" style="background:var(--purple)"></span> Episode Sponsor
+    </button>
+    <button class="tab" data-pkg="3">
+      <span class="dot" style="background:var(--teal)"></span> Partner
+    </button>
+    <button class="tab" data-pkg="4">
+      <span class="dot" style="background:var(--blue)"></span> Supporter
+    </button>
+  </div>
+
+  <div id="panels"></div>
+</div>
+
+<script>
+const COLORS = ['var(--gold)', 'var(--silver)', 'var(--purple)', 'var(--teal)', 'var(--blue)'];
+
+const pkgs = [
+  {
+    name: "Gold",
+    price: "CHF 13'000 / Jahr",
+    note: "8 Events/Jahr + Pitch Competition Sponsor",
+    pre: [
+      { text: "Sponsoring-Vertrag unterzeichnen und Rechnung senden", tag: "Admin" },
+      { text: "Logo in hoher Auflösung (PNG + SVG) anfordern", tag: "Assets" },
+      { text: "Logo auf Website einbinden (Feature-Platz)", tag: "Website" },
+      { text: "Logo auf physisches Marketing Material aufnehmen (Flyer, Banner)", tag: "Print" },
+      { text: "Logo in Social Media Vorlagen einbinden", tag: "Social Media" },
+      { text: "Panel Talk: Datum, Thema und Teilnehmer abstimmen", tag: "Event-Planung" },
+      { text: "Product Placement: Position und Setup am Event besprechen", tag: "Event-Planung" },
+      { text: "Shoutout im Pre-Event Post auf LinkedIn & Instagram planen", tag: "Social Media" },
+      { text: "Sponsor in Event-Kommunikation und Ankündigungen erwähnen", tag: "Kommunikation" },
+    ],
+    post: [
+      { text: "Dropbox-Link mit 40 Bildern innert 24h nach Event senden", tag: "Fotos — innerhalb 24h", urgent: true },
+      { text: "2 Reels zuschneiden, finalisieren und an Sponsor senden", tag: "Video — innerhalb 48h", urgent: true },
+      { text: "Sponsor in allen Recap-Posts auf LI & IG verlinken/taggen", tag: "Social Media" },
+      { text: "Colab Recap Post mit Sponsor gemeinsam abstimmen und publizieren", tag: "Social Media" },
+      { text: "Kurzes schriftliches Feedback vom Sponsor einholen", tag: "Nachbereitung" },
+      { text: "Nächsten Event-Termin bestätigen und im Kalender eintragen", tag: "Planung" },
+    ]
+  },
+  {
+    name: "Silber",
+    price: "CHF 7'500 / Jahr",
+    note: "4 Events/Jahr",
+    pre: [
+      { text: "Sponsoring-Vertrag unterzeichnen und Rechnung senden", tag: "Admin" },
+      { text: "Logo in hoher Auflösung (PNG + SVG) anfordern", tag: "Assets" },
+      { text: "Logo auf Website einbinden (Erwähnung)", tag: "Website" },
+      { text: "Logo in Social Media Vorlagen einbinden", tag: "Social Media" },
+      { text: "Panel Talk: Datum, Thema und Teilnehmer abstimmen (1× pro Jahr)", tag: "Event-Planung" },
+      { text: "Shoutout im Pre-Event Post auf LinkedIn & Instagram planen", tag: "Social Media" },
+      { text: "Sponsor in Event-Kommunikation und Ankündigungen erwähnen", tag: "Kommunikation" },
+    ],
+    post: [
+      { text: "Dropbox-Link mit 15 Bildern innert 24h nach Event senden", tag: "Fotos — innerhalb 24h", urgent: true },
+      { text: "1 Reel zuschneiden, finalisieren und an Sponsor senden", tag: "Video — innerhalb 48h", urgent: true },
+      { text: "Sponsor in allen Recap-Posts auf LI & IG verlinken/taggen", tag: "Social Media" },
+      { text: "Kurzes schriftliches Feedback vom Sponsor einholen", tag: "Nachbereitung" },
+      { text: "Nächsten Event-Termin bestätigen und im Kalender eintragen", tag: "Planung" },
+    ]
+  },
+  {
+    name: "Episode Sponsor",
+    price: "CHF 3'900 / Event",
+    note: "Exklusiv — 1 Sponsor pro Event",
+    pre: [
+      { text: "Sponsoring-Vertrag unterzeichnen und Rechnung senden", tag: "Admin" },
+      { text: "Logo in hoher Auflösung (PNG + SVG) anfordern", tag: "Assets" },
+      { text: "Logo in Social Media Vorlagen einbinden", tag: "Social Media" },
+      { text: "Panel-Teilnahme: Thema, Fragen und Ablauf abstimmen", tag: "Event-Planung" },
+      { text: "Info-Material / Flyer vom Sponsor anfordern (für Tisch-Setup)", tag: "Event-Planung" },
+      { text: "Product Testing Tisch: Position und Aufbau planen", tag: "Event-Planung" },
+      { text: "Erwähnung in allen Pre-Event Posts (LI & IG) sicherstellen", tag: "Social Media" },
+    ],
+    post: [
+      { text: "Dropbox-Link mit 50 Bildern innert 24h nach Event senden", tag: "Fotos — innerhalb 24h", urgent: true },
+      { text: "2 Reels zuschneiden, finalisieren und an Sponsor senden", tag: "Video — innerhalb 48h", urgent: true },
+      { text: "Sponsor in allen Recap-Posts erwähnen + Logo einbinden (LI & IG)", tag: "Social Media" },
+      { text: "Colab Recap Post mit Sponsor gemeinsam abstimmen und publizieren", tag: "Social Media" },
+      { text: "Kurzes schriftliches Feedback vom Sponsor einholen", tag: "Nachbereitung" },
+    ]
+  },
+  {
+    name: "Partner",
+    price: "CHF 1'600 / Event",
+    note: "Max. 6 pro Event",
+    pre: [
+      { text: "Sponsoring-Vertrag unterzeichnen und Rechnung senden", tag: "Admin" },
+      { text: "Logo in hoher Auflösung (PNG + SVG) anfordern", tag: "Assets" },
+      { text: "Logo in Social Media Vorlagen einbinden", tag: "Social Media" },
+      { text: "Closing Speech: Ablauf, Dauer und Key Message abstimmen", tag: "Event-Planung" },
+      { text: "Erwähnung in Pre-Event Posts (LI & IG) einplanen", tag: "Social Media" },
+    ],
+    post: [
+      { text: "Dropbox-Link mit 20 Bildern innert 24h nach Event senden", tag: "Fotos — innerhalb 24h", urgent: true },
+      { text: "1 Reel zuschneiden, finalisieren und an Sponsor senden", tag: "Video — innerhalb 48h", urgent: true },
+      { text: "Sponsor in Recap-Posts erwähnen + Logo einbinden (LI & IG)", tag: "Social Media" },
+      { text: "Kurzes schriftliches Feedback vom Sponsor einholen", tag: "Nachbereitung" },
+    ]
+  },
+  {
+    name: "Supporter",
+    price: "CHF 900 / Event",
+    note: "Nicht limitiert",
+    pre: [
+      { text: "Sponsoring-Vertrag unterzeichnen und Rechnung senden", tag: "Admin" },
+      { text: "Logo in hoher Auflösung (PNG + SVG) anfordern", tag: "Assets" },
+      { text: "Logo auf Supporter-Slide einbinden", tag: "Präsentation" },
+      { text: "Info-Material / Flyer vom Sponsor anfordern", tag: "Event-Planung" },
+    ],
+    post: [
+      { text: "Dropbox-Link mit 10 Bildern innert 24h nach Event senden", tag: "Fotos — innerhalb 24h", urgent: true },
+      { text: "Sponsor in Social Media Content taggen", tag: "Social Media" },
+      { text: "Kurzes schriftliches Feedback vom Sponsor einholen", tag: "Nachbereitung" },
+    ]
+  }
+];
+
+const STORAGE_KEY = 'nextevents_checklist_v1';
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch(e) {}
+  return pkgs.map(p => ({ pre: new Array(p.pre.length).fill(false), post: new Array(p.post.length).fill(false) }));
+}
+
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+
+const state = loadState();
+
+function getProgress(i) {
+  const all = [...state[i].pre, ...state[i].post];
+  return { done: all.filter(Boolean).length, total: all.length };
+}
+
+function renderPanel(i) {
+  const pkg = pkgs[i];
+  const s = state[i];
+  const { done, total } = getProgress(i);
+  const pct = Math.round((done / total) * 100);
+  const color = COLORS[i];
+
+  let html = `
+    <div class="pkg-meta">
+      <div>
+        <div class="pkg-name">${pkg.name}</div>
+        <div class="pkg-sub">${pkg.price} &nbsp;·&nbsp; ${pkg.note}</div>
+      </div>
+      <button class="reset-btn" onclick="resetPkg(${i})">Zurücksetzen</button>
+    </div>
+    <div class="progress-row">
+      <div class="progress-track">
+        <div class="progress-fill" style="width:${pct}%;background:${color}"></div>
+      </div>
+      <span class="progress-label">${done}/${total}</span>
+    </div>
+    <div class="section-header">
+      <span class="section-label">Vor dem Event</span>
+      <div class="section-line"></div>
+    </div>
+  `;
+
+  pkg.pre.forEach((item, j) => { html += todoHTML(i, 'pre', j, item, s.pre[j], color); });
+
+  html += `
+    <div class="section-header" style="margin-top:1.5rem">
+      <span class="section-label">Nach dem Event</span>
+      <div class="section-line"></div>
+    </div>
+  `;
+
+  pkg.post.forEach((item, j) => { html += todoHTML(i, 'post', j, item, s.post[j], color); });
+
+  return html;
+}
+
+function todoHTML(pkgIdx, phase, idx, item, done, color) {
+  const checkSvg = `<svg class="cb-check" viewBox="0 0 9 7"><path d="M1 3.5L3.5 6L8 1" stroke="${color}"/></svg>`;
+  const cbStyle = done ? `background:${color}22;border-color:${color}66` : '';
+  return `<div class="todo${done ? ' done' : ''}" onclick="toggle(${pkgIdx},'${phase}',${idx})">
+    <div class="cb" style="${cbStyle}">${checkSvg}</div>
+    <div class="todo-body">
+      <div class="todo-text">${item.text}</div>
+      <span class="todo-tag${item.urgent ? ' urgent' : ''}">${item.tag}</span>
+    </div>
+  </div>`;
+}
+
+function toggle(pkgIdx, phase, idx) {
+  state[pkgIdx][phase][idx] = !state[pkgIdx][phase][idx];
+  saveState();
+  document.getElementById('panel-' + pkgIdx).innerHTML = renderPanel(pkgIdx);
+}
+
+function resetPkg(pkgIdx) {
+  state[pkgIdx].pre = new Array(pkgs[pkgIdx].pre.length).fill(false);
+  state[pkgIdx].post = new Array(pkgs[pkgIdx].post.length).fill(false);
+  saveState();
+  document.getElementById('panel-' + pkgIdx).innerHTML = renderPanel(pkgIdx);
+}
+
+const panelsEl = document.getElementById('panels');
+pkgs.forEach((_, i) => {
+  const div = document.createElement('div');
+  div.className = 'panel' + (i === 0 ? ' active' : '');
+  div.id = 'panel-' + i;
+  div.innerHTML = renderPanel(i);
+  panelsEl.appendChild(div);
+});
+
+document.getElementById('tabs').addEventListener('click', e => {
+  const tab = e.target.closest('[data-pkg]');
+  if (!tab) return;
+  const idx = +tab.dataset.pkg;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + idx).classList.add('active');
+});
+</script>
+</body>
+</html>
